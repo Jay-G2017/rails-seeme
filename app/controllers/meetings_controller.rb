@@ -1,10 +1,12 @@
 class MeetingsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_meeting, only: [:show, :edit, :update, :destroy]
 
   # GET /meetings
   # GET /meetings.json
   def index
-    @meetings = Meeting.all
+    @meetings = policy_scope(Meeting)
+    authorize @meetings
   end
 
   # GET /meetings/1
@@ -15,6 +17,7 @@ class MeetingsController < ApplicationController
   # GET /meetings/new
   def new
     @meeting = Meeting.new
+    authorize @meeting
   end
 
   # GET /meetings/1/edit
@@ -25,7 +28,7 @@ class MeetingsController < ApplicationController
   # POST /meetings.json
   def create
     @meeting = Meeting.new(meeting_params)
-
+    authorize @meeting
     respond_to do |format|
       if @meeting.save
         format.html { redirect_to @meeting, notice: 'Meeting was successfully created.' }
@@ -65,6 +68,7 @@ class MeetingsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_meeting
       @meeting = Meeting.find(params[:id])
+      authorize @meeting
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
